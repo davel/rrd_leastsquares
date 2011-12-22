@@ -4,8 +4,6 @@ use strict;
 use warnings;
 
 use RRDs;
-use Data::Dumper;
-use Statistics::Basic::LeastSquareFit;
 use Time::Piece;
 
 my $BEGIN = time;
@@ -86,6 +84,7 @@ sub rrd_least_squares {
         $now += $step;
     }
 
+    # If disc space usage is flat.
     return unless $nom;
 
     my $m = $nom / $dem;
