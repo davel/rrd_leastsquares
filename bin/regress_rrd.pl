@@ -10,7 +10,7 @@ my $BEGIN = time;
 
 # Date range which we do regression on.
 my $end_time = $BEGIN - 60*30;
-my $start_time = $end_time - 86400;
+my $start_time = $end_time - 86400*7;
 
 # How far into the future will we predict disc full?
 my $TIME_AFTER_WHICH_WE_NO_LONGER_CARE = $BEGIN+86400*60;
@@ -39,8 +39,11 @@ foreach my $rrd (</var/lib/rrd/munin/*/*-df-_*.rrd>) {
 @ttl = sort { $a->[1] <=> $b->[1] } @ttl;
 
 foreach my $t (@ttl) {
-    print $t->[0]." ".Time::Piece->new($t->[1])->strftime."\n";
+    $t->[0] =~ /\/([^\/]+)-df-_(.+)\.rrd/;
+
+    print "$1,$2,".Time::Piece->new($t->[1])->datetime."\n";
 }
+
 
 exit 0;
 
