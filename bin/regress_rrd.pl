@@ -5,6 +5,15 @@ use warnings;
 
 use RRDs;
 use Time::Piece;
+use Getopt::Long;
+use Pod::Usage;
+
+my $glob = "/var/lib/rrd/munin/*/*-df-_*.rrd";
+
+GetOptions(
+    'glob=s' => \$glob,
+);
+
 
 my $BEGIN = time;
 
@@ -17,7 +26,7 @@ my $TIME_AFTER_WHICH_WE_NO_LONGER_CARE = $BEGIN+86400*60;
 
 my @ttl;
 
-foreach my $rrd (</var/lib/rrd/munin/*/*-df-_*.rrd>) {
+foreach my $rrd (glob($glob)) {
     my $ls = rrd_least_squares($start_time, $end_time, $rrd);
 
     if (!defined $ls) {
