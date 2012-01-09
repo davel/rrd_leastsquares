@@ -7,10 +7,13 @@ use RRDs;
 use Time::Piece;
 
 my $BEGIN = time;
+
+# Date range which we do regression on.
 my $end_time = $BEGIN - 60*30;
 my $start_time = $end_time - 86400;
 
-my $TIME_AFTER_WHICH_WE_NO_LONGER_CARE = 1420070400;
+# How far into the future will we predict disc full?
+my $TIME_AFTER_WHICH_WE_NO_LONGER_CARE = $BEGIN+86400*60;
 
 my @ttl;
 
@@ -18,7 +21,11 @@ foreach my $rrd (</var/lib/rrd/munin/*/*-df-_*.rrd>) {
     my $ls = rrd_least_squares($start_time, $end_time, $rrd);
 
     if (!defined $ls) {
-        print "no data for $rrd\n";
+#        print "no data for $rrd\n";
+        next;
+    }
+    elsif ($ls == -1) {
+        # Usage flat, ignore.
         next;
     }
     elsif ($ls > $BEGIN && $ls < $TIME_AFTER_WHICH_WE_NO_LONGER_CARE) {
@@ -85,7 +92,7 @@ sub rrd_least_squares {
     }
 
     # If disc space usage is flat.
-    return unless $nom;
+    return -1 unless $nom;
 
     my $m = $nom / $dem;
 
