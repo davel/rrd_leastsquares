@@ -52,9 +52,7 @@ foreach my $rrd (glob($glob)) {
 @ttl = sort { $a->[1] <=> $b->[1] } @ttl;
 
 foreach my $t (@ttl) {
-    $t->[0] =~ /\/([^\/]+)-df-_(.+)\.rrd/;
-
-    print "$1,$2,".Time::Piece->new($t->[1])->datetime."\n";
+    print $t->[0].",".Time::Piece->new($t->[1])->datetime."\n";
 }
 
 
