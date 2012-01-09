@@ -10,10 +10,12 @@ use Pod::Usage;
 
 my $glob = "/var/lib/rrd/munin/*/*-df-_*.rrd";
 my $regression_period = 86400*7;
+my $fail_level = 100;
 
 GetOptions(
     'glob=s' => \$glob,
-    'period_to_regress=i' => $regression_period,
+    'period_to_regress=i' => \$regression_period,
+    'fail_level=i' => \$fail_level,
 ) or die;
 
 
@@ -116,7 +118,7 @@ sub rrd_least_squares {
     # Find x for y=100
     # x = (y-c)/m
 
-    my $x_fail = (100-$c)/$m;
+    my $x_fail = ($fail_level-$c)/$m;
 
     return $x_fail;
 }
