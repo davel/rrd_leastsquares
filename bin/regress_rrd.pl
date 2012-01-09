@@ -9,17 +9,19 @@ use Getopt::Long;
 use Pod::Usage;
 
 my $glob = "/var/lib/rrd/munin/*/*-df-_*.rrd";
+my $regression_period = 86400*7;
 
 GetOptions(
     'glob=s' => \$glob,
-);
+    'period_to_regress=i' => $regression_period,
+) or die;
 
 
 my $BEGIN = time;
 
 # Date range which we do regression on.
 my $end_time = $BEGIN - 60*30;
-my $start_time = $end_time - 86400*7;
+my $start_time = $end_time - $regression_period;
 
 # How far into the future will we predict disc full?
 my $TIME_AFTER_WHICH_WE_NO_LONGER_CARE = $BEGIN+86400*60;
